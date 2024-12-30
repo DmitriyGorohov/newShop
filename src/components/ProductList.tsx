@@ -7,13 +7,16 @@ import {
     Image,
     StyleSheet,
     TouchableOpacity,
+    Platform,
 } from 'react-native';
 import Colors from '@src/styles/Colors';
 import { useDispatch, useSelector } from 'react-redux';
 import {
     addProductToBasket,
     decreaseProductQuantity,
+    removeProductFromFavorites,
     shopSelector,
+    toggleFavoriteProduct,
 } from '@src/store/shop/shopSlice';
 import Counter from '@src/components/Counter';
 
@@ -24,34 +27,53 @@ const ProductList = ({ data }: { data: Product[] }) => {
     return (
         <FlatList
             data={data}
-            numColumns={2}
             bounces={false}
             contentContainerStyle={styles.contentContainerStyle}
             showsVerticalScrollIndicator={false}
             keyExtractor={(item) => item.id.toString()}
             renderItem={({ item }) => (
                 <View style={styles.product}>
+                    <TouchableOpacity
+                        activeOpacity={1}
+                        onPress={() => {
+                            if (item.favorites) {
+                                dispatch(removeProductFromFavorites(item.id));
+                            } else {
+                                dispatch(toggleFavoriteProduct(item.id));
+                            }
+                        }}
+                        style={{
+                            zIndex: 999,
+                            width: 60,
+                            height: 60,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            borderRadius: 60 / 2,
+                            position: 'absolute',
+                            top: 2,
+                            right: 2,
+                            backgroundColor: Colors.white,
+                        }}
+                    >
+                        {item.favorites ? (
+                            <Image
+                                source={require('@src/assets/img-main/favorites-true/mdi_heart.png')}
+                                resizeMode={'cover'}
+                            />
+                        ) : (
+                            <Image
+                                source={require('@src/assets/img-main/favorites-false/mdi_heart-outline.png')}
+                                resizeMode={'cover'}
+                            />
+                        )}
+                    </TouchableOpacity>
                     <Image
                         resizeMode="cover"
                         source={item.image}
                         style={styles.image}
                     />
-                    <View
-                        style={{
-                            flexDirection: 'row',
-                            alignItems: 'center',
-                            marginBottom: 4,
-                        }}
-                    >
-                        <Text style={styles.price}>${item.price}</Text>
-                        {item.oldPrice && (
-                            <Text style={styles.oldPrice}>
-                                ${item.oldPrice}
-                            </Text>
-                        )}
-                    </View>
                     <Text style={styles.title}>{item.title}</Text>
-                    <Text style={styles.description}>{item.description}</Text>
+                    <Text style={styles.price}>${item.price}</Text>
                     <View style={styles.actionsContainer}>
                         {itemBasket.some(
                             (basketItem) => basketItem.product.id === item.id
@@ -91,46 +113,28 @@ const ProductList = ({ data }: { data: Product[] }) => {
 
 const styles = StyleSheet.create({
     product: {
-        width: '49%',
-        backgroundColor: Colors.white,
-        marginRight: 4,
-        borderWidth: 1,
-        padding: 12,
-        borderColor: Colors.grayCartBorder,
-        marginBottom: 13,
-        borderRadius: 10,
+        flex: 1,
+        marginBottom: 20,
     },
     contentContainerStyle: {
-        width: '100%',
-        paddingBottom: 90,
         marginTop: 12,
+        paddingBottom: Platform.OS === 'ios' ? 150 : 180,
     },
     image: {
-        alignSelf: 'center',
+        width: '100%',
         borderRadius: 12,
         marginBottom: 12,
     },
     title: {
-        fontWeight: '400',
-        fontSize: 14,
-        color: Colors.textBlack,
+        fontWeight: '500',
+        fontSize: 20,
+        color: Colors.white,
         marginBottom: 4,
     },
-    description: {
-        fontSize: 12,
-        color: Colors.textGray,
-    },
     price: {
-        fontSize: 20,
-        fontWeight: '700',
-        marginRight: 8,
-        color: Colors.textBlack,
-    },
-    oldPrice: {
-        fontSize: 12,
-        fontWeight: '500',
-        textDecorationLine: 'line-through',
-        color: Colors.textGray,
+        fontSize: 17,
+        fontWeight: '900',
+        color: Colors.pink,
     },
     // Другие стили остаются прежними
     actionsContainer: {
@@ -138,8 +142,8 @@ const styles = StyleSheet.create({
         width: '100%',
     },
     addButton: {
-        backgroundColor: Colors.white,
-        borderRadius: 8,
+        backgroundColor: Colors.pink,
+        borderRadius: 20,
         padding: 10,
         shadowColor: 'black',
         shadowOffset: { width: 0, height: 0 },
@@ -147,9 +151,9 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     addButtonText: {
-        fontSize: 12,
+        fontSize: 18,
         textAlign: 'center',
-        color: Colors.textBlack,
+        color: Colors.white,
     },
 });
 

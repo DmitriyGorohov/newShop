@@ -1,5 +1,4 @@
 import React from 'react';
-import { type FC } from 'react';
 import {StyleSheet, Text, TouchableOpacity, useWindowDimensions, View} from 'react-native';
 import Animated, {
     useAnimatedStyle,
@@ -37,7 +36,7 @@ const SegmentedControl: React.FC<SegmentedControlProps> = React.memo(
                     styles.container,
                     {
                         width: segmentedControlWidth,
-                        borderRadius: 12,
+                        borderRadius: 30,
                         paddingLeft: internalPadding / 2,
                     },
                 ]}
@@ -76,13 +75,14 @@ const SegmentedControl: React.FC<SegmentedControlProps> = React.memo(
 const styles = StyleSheet.create({
     container: {
         flexDirection: 'row',
-        height: 36,
+        height: 56,
         width: '100%',
-        backgroundColor: Colors.gray,
+        backgroundColor: Colors.purpleBackground,
+        marginBottom: 20,
     },
     activeBox: {
         position: 'absolute',
-        borderRadius: 12,
+        borderRadius: 30,
         shadowColor: 'black',
         shadowOffset: {
             width: 0,
@@ -92,11 +92,13 @@ const styles = StyleSheet.create({
         elevation: 3,
         height: '95%',
         top: '3%',
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.button.second,
     },
     labelContainer: { justifyContent: 'center', alignItems: 'center' },
     label: {
-        fontSize: 12,
+        fontSize: 10,
+        color: Colors.white,
+        textAlign: 'center',
     },
 });
 export default SegmentedControl;

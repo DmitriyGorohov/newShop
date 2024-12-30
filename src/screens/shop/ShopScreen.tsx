@@ -1,5 +1,13 @@
-import React, {useState} from 'react';
-import {Image, StyleSheet, Text, TouchableOpacity, View} from 'react-native';
+import React, { useEffect, useState } from 'react';
+import {
+    Image,
+    Platform,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Colors from '@src/styles/Colors';
 import SegmentedControl from '@src/components/SegmentedControl';
 import ProductList from '@src/components/ProductList';
@@ -9,66 +17,207 @@ import {
     breakfasts,
     dinners,
     lunches,
+    app,
+    desert,
 } from '@src/utils/common';
 import Navigation from '@src/navigation/navigation';
-import {Screens} from '@src/navigation/const';
-import {useSelector} from 'react-redux';
-import {shopSelector} from '@src/store/shop/shopSlice';
+import { Screens } from '@src/navigation/const';
+import { useDispatch, useSelector } from 'react-redux';
+import { shopSelector, visibleItems } from '@src/store/shop/shopSlice';
 
-const options = ['Breakfasts', 'Lunches', 'Dinners', 'All'];
+const options = [
+    'All',
+    'Breakfasts',
+    'Main Courses',
+    'Salads',
+    'Appetizers',
+    'Desserts',
+];
 
 const ShopScreen = (): React.JSX.Element => {
-    const { totalCount } = useSelector(shopSelector);
-    const [selectedOption, setSelectedOption] = useState('Breakfasts');
+    const dispatch = useDispatch();
+    const { itemBasket, itemFavorites, items } = useSelector(shopSelector);
+    const [selectedOption, setSelectedOption] = useState('All');
+    console.log(itemFavorites);
+    useEffect(() => {
+        const getProducts = (): Product[] => {
+            switch (selectedOption) {
+                case 'All':
+                    return allProducts;
+                case 'Breakfasts':
+                    return breakfasts;
+                case 'Main Courses':
+                    return lunches;
+                case 'Salads':
+                    return dinners;
+                case 'Appetizers':
+                    return app;
+                case 'Desserts':
+                    return desert;
+                default:
+                    return [];
+            }
+        };
 
-    const getProducts = (): Product[] => {
-        switch (selectedOption) {
-            case 'Breakfasts':
-                return breakfasts;
-            case 'Lunches':
-                return lunches;
-            case 'Dinners':
-                return dinners;
-            case 'All':
-                return allProducts;
-            default:
-                return [];
-        }
-    };
-
-    // Отображаемые данные
-    const products = getProducts();
-
-    const handleNavigateCart = () => {
-        Navigation.navigate(Screens.CART);
-    };
+        // Отображаемые данные
+        const products = getProducts();
+        dispatch(visibleItems(products));
+    }, [selectedOption, dispatch]);
 
     return (
-        <View style={styles.container}>
-            <SegmentedControl
-                options={options}
-                selectedOption={selectedOption}
-                onOptionPress={setSelectedOption}
-            />
-            <ProductList data={products} />
-            <TouchableOpacity activeOpacity={0.7} onPress={handleNavigateCart} style={styles.cartButton}>
-                <Image
-                    resizeMode="cover"
-                    source={require('@src/assets/img/cart-icon/solar_cart-bold.png')}
-                    style={styles.cartIcon}
+        <SafeAreaView
+            style={[
+                styles.container,
+                { paddingTop: Platform.OS === 'ios' ? 0 : 60 },
+            ]}
+        >
+            <View
+                style={{
+                    flexDirection: 'row',
+                    alignItems: 'center',
+                    justifyContent: 'space-between',
+                    paddingHorizontal: 16,
+                    marginBottom: 20,
+                }}
+            >
+                <Text
+                    style={{
+                        color: Colors.white,
+                        fontSize: 35,
+                        fontWeight: '800',
+                    }}
+                >
+                    Shop
+                </Text>
+                <View
+                    style={{
+                        flexDirection: 'row',
+                        alignItems: 'center',
+                    }}
+                >
+                    <TouchableOpacity
+                        onPress={() => Navigation.navigate(Screens.SHOP_FAVORITE)}
+                        activeOpacity={0.9}
+                        style={{
+                            width: 65,
+                            height: 65,
+                            borderRadius: 65 / 2,
+                            backgroundColor: Colors.button.second,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 12,
+                        }}
+                    >
+                        {itemFavorites.length > 0 && (
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    backgroundColor: Colors.pink,
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20 / 2,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                    }}
+                                >
+                                    {itemFavorites.length}
+                                </Text>
+                            </View>
+                        )}
+                        <Image
+                            resizeMode={'cover'}
+                            source={require('@src/assets/img-main/like/Vector.png')}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => Navigation.navigate(Screens.CART)}
+                        activeOpacity={0.9}
+                        style={{
+                            width: 65,
+                            height: 65,
+                            borderRadius: 65 / 2,
+                            backgroundColor: Colors.button.second,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 12,
+                        }}
+                    >
+                        {itemBasket.length > 0 && (
+                            <View
+                                style={{
+                                    position: 'absolute',
+                                    top: 0,
+                                    right: 0,
+                                    backgroundColor: Colors.pink,
+                                    width: 20,
+                                    height: 20,
+                                    borderRadius: 20 / 2,
+                                    alignItems: 'center',
+                                    justifyContent: 'center',
+                                }}
+                            >
+                                <Text
+                                    style={{
+                                        fontSize: 10,
+                                        color: Colors.white,
+                                    }}
+                                >
+                                    {itemBasket.length}
+                                </Text>
+                            </View>
+                        )}
+                        <Image
+                            resizeMode={'cover'}
+                            source={require('@src/assets/img-main/cart/Group.png')}
+                        />
+                    </TouchableOpacity>
+                    <TouchableOpacity
+                        onPress={() => Navigation.pop()}
+                        activeOpacity={0.9}
+                        style={{
+                            width: 65,
+                            height: 65,
+                            borderRadius: 65 / 2,
+                            backgroundColor: Colors.button.second,
+                            alignItems: 'center',
+                            justifyContent: 'center',
+                            marginRight: 12,
+                        }}
+                    >
+                        <Image
+                            resizeMode={'cover'}
+                            source={require('@src/assets/img-main/home/Vector.png')}
+                        />
+                    </TouchableOpacity>
+                </View>
+            </View>
+            <View
+                style={{
+                    paddingHorizontal: 16,
+                }}
+            >
+                <SegmentedControl
+                    options={options}
+                    selectedOption={selectedOption}
+                    onOptionPress={setSelectedOption}
                 />
-                <Text style={styles.cartText}>{totalCount} $</Text>
-            </TouchableOpacity>
-        </View>
+                <ProductList data={items} />
+            </View>
+        </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        paddingHorizontal: 16,
-        backgroundColor: Colors.white,
-        alignItems: 'center',
-        paddingTop: 20,
+        backgroundColor: Colors.purpleBlack,
     },
     cartButton: {
         flexDirection: 'row',
