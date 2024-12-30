@@ -1,17 +1,30 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { type RootState } from '@src/store/store';
-import { Product } from '@src/utils/common';
+import { allProducts } from '@src/utils/common';
 
 export const shopSelector = (state: RootState): ShopState => state.shop;
+
+type Product = {
+    id: number;
+    title: string;
+    image: ReturnType<typeof require>;
+    price: number;
+    favorites: boolean;
+    quantity?: number;
+};
 
 export interface ShopState {
     totalCount: number;
     itemBasket: { product: Product; quantity: number }[];
+    itemFavorites: { product: Product; quantity: number }[];
+    items: Product[];
 }
 
-const initialState = {
+const initialState: ShopState = {
     totalCount: 0,
     itemBasket: [],
+    itemFavorites: [],
+    items: allProducts,
 };
 
 const shopSlice = createSlice({
@@ -68,6 +81,49 @@ const shopSlice = createSlice({
                 }
             }
         },
+        toggleFavoriteProduct: (state, action: PayloadAction<number>) => {
+            const productId = action.payload;
+
+            // Найти продукт в массиве items
+            const productInItems = state.items.find((item) => item.id === productId);
+
+            if (!productInItems) {
+                console.error(`Product with ID ${productId} not found in items`);
+                return;
+            }
+
+            // Проверить, есть ли продукт в избранных
+            const favoriteIndex = state.itemFavorites.findIndex(
+                (fav) => fav.product.id === productId
+            );
+
+            if (favoriteIndex !== -1) {
+                // Если продукт уже в избранных, удалить его
+                state.itemFavorites.splice(favoriteIndex, 1);
+                productInItems.favorites = false; // Обновить поле favorites
+            } else {
+                // Если продукта нет в избранных, добавить его
+                state.itemFavorites.push({ product: { ...productInItems }, quantity: 0 });
+                productInItems.favorites = true; // Обновить поле favorites
+            }
+        },
+        visibleItems: (state, action: PayloadAction<Product[]>) => {
+            state.items = action.payload;
+        },
+        removeProductFromFavorites: (state, action: PayloadAction<number>) => {
+            const productId = action.payload;
+
+            // Удаляем продукт из избранного
+            state.itemFavorites = state.itemFavorites.filter(
+                (item) => item.product.id !== productId
+            );
+
+            // Обновляем поле favorites в массиве items
+            const productInItems = state.items.find((item) => item.id === productId);
+            if (productInItems) {
+                productInItems.favorites = false;
+            }
+        },
     },
 });
 
@@ -75,5 +131,9 @@ export const shopSliceReducer = shopSlice.reducer;
 export const {
     addProductToBasket,
     resetProductToBasket,
+    toggleFavoriteProduct,
+    removeProductFromFavorites,
     decreaseProductQuantity,
+    removeProductFromBasket,
+    visibleItems,
 } = shopSlice.actions;

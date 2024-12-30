@@ -1,48 +1,48 @@
 import React from 'react';
-import { Image, StyleSheet, Text, View } from 'react-native';
+import { Image, StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import Colors from '@src/styles/Colors';
 import { useRoute } from '@react-navigation/native';
 import { MainRouteProps } from '@src/types/stacks/MainStacksType';
+import Navigation from '@src/navigation/navigation';
 
 const EventContentScreen = (): React.JSX.Element => {
     const { params } = useRoute<MainRouteProps>();
     return (
         <View style={styles.container}>
-            <Text style={styles.title}>{params.item.title}</Text>
+            <TouchableOpacity
+                onPress={() => Navigation.pop()}
+                activeOpacity={0.9}
+                style={{
+                    width: 65,
+                    height: 65,
+                    position: 'absolute',
+                    top: 60,
+                    left: 16,
+                    zIndex: 999,
+                    borderRadius: 65 / 2,
+                    backgroundColor: Colors.button.second,
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    marginRight: 12,
+                }}
+            >
+                <Image
+                    resizeMode={'cover'}
+                    source={require('@src/assets/img-main/arrow-back/basil_arrow-up-solid.png')}
+                />
+            </TouchableOpacity>
             <Image source={params.item.image} style={styles.image} />
+            <Text style={styles.title}>{params.item.title}</Text>
+            <Text style={styles.date}>{params.item.date}</Text>
+            <Text style={styles.time}>{params.item.time}</Text>
             <Text style={styles.description}>{params.item.description}</Text>
-            <Text
-                style={{
-                    fontSize: 16,
-                    color: Colors.textBlack,
-                }}
-            >
-                Time
-            </Text>
-            <View style={styles.infoContainer}>
-                <Image source={require('@src/assets/img/time/Group.png')} />
-                <Text style={styles.infoText}>{params.item.time}</Text>
-            </View>
-            <Text
-                style={{
-                    fontSize: 16,
-                    color: Colors.textBlack,
-                }}
-            >
-                Date
-            </Text>
-            <View style={styles.infoContainer}>
-                <Image source={require('@src/assets/img/data/Group.png')} />
-                <Text style={styles.infoText}>{params.item.date}</Text>
-            </View>
         </View>
     );
 };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.white,
-        paddingHorizontal: 16,
+        backgroundColor: Colors.purpleBlack,
     },
     header: {
         flexDirection: 'row',
@@ -55,37 +55,36 @@ const styles = StyleSheet.create({
         marginLeft: 8,
     },
     title: {
-        paddingTop: 20,
-        fontSize: 22,
-        fontWeight: 'bold',
-        color: Colors.textBlack,
+        paddingHorizontal: 16,
+        fontSize: 25,
+        fontWeight: '600',
+        color: Colors.white,
         marginBottom: 16,
     },
     image: {
         width: '100%',
-        height: 200,
-        borderRadius: 12,
+        borderRadius: 20,
         marginBottom: 16,
     },
     description: {
         fontSize: 16,
         color: '#666666',
-        marginBottom: 24,
+        fontWeight: '400',
+        paddingHorizontal: 16,
     },
-    infoContainer: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        marginBottom: 16,
-        padding: 12,
-        backgroundColor: Colors.white,
-        borderWidth: 1,
-        borderColor: Colors.input.borderColor,
-        borderRadius: 8,
+    date: {
+        paddingHorizontal: 16,
+        alignSelf: 'flex-start',
+        fontSize: 13,
+        color: Colors.pink,
+        marginBottom: 10,
     },
-    infoText: {
-        fontSize: 16,
-        color: '#333333',
-        marginLeft: 8,
+    time: {
+        paddingHorizontal: 16,
+        alignSelf: 'flex-start',
+        fontSize: 13,
+        color: Colors.pink,
+        marginBottom: 10,
     },
 });
 export default EventContentScreen;

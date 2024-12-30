@@ -33,26 +33,27 @@ const styles = StyleSheet.create({
         flexDirection: 'row',
         justifyContent: 'space-between',
         alignItems: 'center',
-        backgroundColor: Colors.gray,
-        borderRadius: 8,
+        backgroundColor: Colors.pink,
+        borderRadius: 20,
+        paddingHorizontal: 30,
         padding: 10,
-        borderWidth: 0.5,
-        borderColor: Colors.gray,
     },
     counterButton: {
         justifyContent: 'center',
         alignItems: 'center',
-        flex: 1,
+        flex: 0.5,
+        width: '100%',
+        height: 20,
     },
     counterText: {
         fontSize: 12,
         fontWeight: '700',
-        color: Colors.textBlack,
+        color: Colors.white,
     },
     counterTextRight: {
-        fontSize: 12,
+        fontSize: 18,
         fontWeight: '700',
-        color: Colors.button.buttonGreen,
+        color: Colors.white,
     },
     addButton: {
         backgroundColor: Colors.white,
@@ -64,9 +65,9 @@ const styles = StyleSheet.create({
         elevation: 3,
     },
     addButtonText: {
-        fontSize: 12,
+        fontSize: 18,
         textAlign: 'center',
-        color: Colors.textBlack,
+        color: Colors.white,
     },
 });
 

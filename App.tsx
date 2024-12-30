@@ -6,7 +6,6 @@ import { Host } from 'react-native-portalize';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Provider } from 'react-redux';
 import { store } from '@src/store/store';
-import Colors from '@src/styles/Colors';
 
 const App = () => {
     return (
@@ -15,8 +14,8 @@ const App = () => {
                 <SafeAreaProvider style={styles.container}>
                     <StatusBar
                         translucent
-                        barStyle="dark-content"
-                        backgroundColor={Colors.white}
+                        barStyle="light-content"
+                        backgroundColor={'transparent'}
                     />
                     <Host>
                         <NavigatorContainerTemplate />

@@ -1,9 +1,16 @@
 import { KeyboardView } from '@src/components/base/KeyboardView';
 import React, { useState } from 'react';
-import {Image, StyleSheet, Text, TextInput, TouchableOpacity, View} from 'react-native';
+import {
+    Image, Platform,
+    SafeAreaView,
+    StyleSheet,
+    Text,
+    TextInput,
+    TouchableOpacity,
+    View,
+} from 'react-native';
 import Colors from '@src/styles/Colors';
 import Navigation from '@src/navigation/navigation';
-import {Screens} from '@src/navigation/const';
 
 const ContactsScreen = (): React.JSX.Element => {
     const [phone, setPhone] = useState('');
@@ -12,18 +19,54 @@ const ContactsScreen = (): React.JSX.Element => {
     const [taskIndex, setTaskIndex] = useState('');
 
     return (
-        <View style={styles.container}>
-            <KeyboardView isScroll scrollViewStyle={{ paddingBottom: 50 }}>
+        <SafeAreaView style={styles.container}>
+            <KeyboardView isScroll scrollViewStyle={{ paddingBottom: 50, paddingTop: Platform.OS === 'ios' ? 0 : 50 }}>
                 <View
                     style={{
-                        flex: 1,
                         paddingHorizontal: 16,
-                        paddingTop: 20,
-                        paddingBottom: 50,
+                        paddingVertical: 30,
+                        backgroundColor: Colors.purpleBackground,
+                        borderRadius: 20,
+                        marginHorizontal: 6,
                     }}
                 >
+                    <View
+                        style={{
+                            alignItems: 'center',
+                            justifyContent: 'flex-start',
+                            flexDirection: 'row',
+                            marginBottom: 20,
+                        }}
+                    >
+                        <TouchableOpacity
+                            onPress={() => Navigation.pop()}
+                            activeOpacity={0.9}
+                            style={{
+                                width: 65,
+                                height: 65,
+                                borderRadius: 65 / 2,
+                                backgroundColor: Colors.button.second,
+                                alignItems: 'center',
+                                justifyContent: 'center',
+                                marginRight: 12,
+                            }}
+                        >
+                            <Image
+                                resizeMode={'cover'}
+                                source={require('@src/assets/img-main/arrow-back/basil_arrow-up-solid.png')}
+                            />
+                        </TouchableOpacity>
+                        <Text
+                            style={{
+                                color: Colors.white,
+                                fontSize: 35,
+                                fontWeight: '800',
+                            }}
+                        >
+                            Contacts
+                        </Text>
+                    </View>
                     <View style={styles.form}>
-                        <Text style={styles.label}>Phone number</Text>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={Colors.input.placeholderColor}
@@ -34,7 +77,6 @@ const ContactsScreen = (): React.JSX.Element => {
                         />
                     </View>
                     <View style={styles.form}>
-                        <Text style={styles.label}>Address</Text>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={Colors.input.placeholderColor}
@@ -44,92 +86,32 @@ const ContactsScreen = (): React.JSX.Element => {
                         />
                     </View>
                     <View style={styles.form}>
-                        <Text style={styles.label}>Comments</Text>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={Colors.input.placeholderColor}
-                            placeholder={'Comments'}
+                            placeholder={'Data'}
                             value={comment}
                             onChangeText={setComment}
                         />
                     </View>
                     <View style={styles.form}>
-                        <Text style={styles.label}>Index</Text>
                         <TextInput
                             style={styles.input}
                             placeholderTextColor={Colors.input.placeholderColor}
-                            placeholder={'Index'}
+                            placeholder={'Table'}
                             value={taskIndex}
                             onChangeText={setTaskIndex}
                         />
                     </View>
                 </View>
             </KeyboardView>
-            <View
-                style={{
-                    flexDirection: 'row',
-                    alignItems: 'center',
-                    paddingHorizontal: 16,
-                    position: 'absolute',
-                    bottom: 40,
-                }}
-            >
-                <TouchableOpacity
-                    activeOpacity={0.8}
-                    onPress={() => {
-                        Navigation.pop();
-                    }}
-                    style={{
-                        width: '100%',
-                        flex: 1,
-                        height: 50,
-                        marginRight: 12,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        backgroundColor: Colors.button.buttonGreen,
-                        borderRadius: 12,
-                    }}
-                >
-                    <Text
-                        style={{
-                            color: Colors.white,
-                            fontSize: 16,
-                            fontWeight: '700',
-                        }}
-                    >
-                        Save
-                    </Text>
-                </TouchableOpacity>
-                <TouchableOpacity
-                    activeOpacity={0.7}
-                    style={{
-                        width: 50,
-                        height: 50,
-                        alignItems: 'center',
-                        justifyContent: 'center',
-                        borderRadius: 12,
-                        backgroundColor: Colors.white,
-                        borderWidth: 1,
-                        borderColor: Colors.button.buttonGreen,
-                    }}
-                >
-                    <Image
-                        resizeMode="cover"
-                        source={require('@src/assets/img/cart-fill/solar_cart-bold.png')}
-                        style={{
-                            width: 24,
-                            height: 24,
-                        }}
-                    />
-                </TouchableOpacity>
-            </View>
-        </View>
+        </SafeAreaView>
     );
 };
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: Colors.white,
+        backgroundColor: Colors.purpleBlack,
     },
     form: {
         marginBottom: 16,
@@ -141,16 +123,14 @@ const styles = StyleSheet.create({
         marginBottom: 4,
     },
     input: {
-        color: Colors.textBlack,
+        color: Colors.white,
         fontSize: 16,
         fontWeight: '400',
         paddingHorizontal: 16,
         width: '100%',
         minHeight: 60,
-        maxHeight: 300,
-        borderWidth: 1,
-        borderColor: Colors.input.borderColor,
-        borderRadius: 12,
+        backgroundColor: Colors.purpleBlack,
+        borderRadius: 32,
     },
 });
 export default ContactsScreen;
