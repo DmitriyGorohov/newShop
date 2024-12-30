@@ -151,7 +151,7 @@ export const desert: Product[] = [
         title: 'Rice porridge with lingonberries',
         image: require('@src/assets/img-main/d-1/d-1.png'),
         price: 19,
-        favorites: true,
+        favorites: false,
     },
     {
         id: 14,
