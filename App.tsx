@@ -11,7 +11,6 @@ import { AxiosApi } from '@src/api/axiosApi';
 import BootSplash from 'react-native-bootsplash';
 
 const AppWrapper = () => {
-
     return (
         <GestureHandlerRootView style={styles.rootContainer}>
             <Provider store={store}>
@@ -26,7 +25,6 @@ const App = () => {
 
     useEffect(() => {
         (async () => {
-            await BootSplash.hide();
             dispatch(setEnabledApi(null));
             dispatch(setEvents([]));
             dispatch(setPath(''));
@@ -39,6 +37,10 @@ const App = () => {
                 console.log('Ответ от API:', data);
             } catch (error) {
                 console.error('Ошибка:', error);
+            } finally {
+                setTimeout(async () => {
+                    await BootSplash.hide();
+                }, 1000)
             }
         })();
     }, [dispatch]);
