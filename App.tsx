@@ -1,28 +1,58 @@
 import NavigatorContainerTemplate from '@src/navigation/NavigatorContainerTemplate';
-import React from 'react';
+import React, { useEffect } from 'react';
 import { StatusBar, StyleSheet } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import { Host } from 'react-native-portalize';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
-import { Provider } from 'react-redux';
-import { store } from '@src/store/store';
+import { Provider, useDispatch } from 'react-redux';
+import { AppDispatch, store } from '@src/store/store';
+import { setEnabledApi, setEvents, setPath } from '@src/store/shop/shopSlice';
+import { AxiosApi } from '@src/api/axiosApi';
+import BootSplash from 'react-native-bootsplash';
 
-const App = () => {
+const AppWrapper = () => {
+
     return (
         <GestureHandlerRootView style={styles.rootContainer}>
             <Provider store={store}>
-                <SafeAreaProvider style={styles.container}>
-                    <StatusBar
-                        translucent
-                        barStyle="light-content"
-                        backgroundColor={'transparent'}
-                    />
-                    <Host>
-                        <NavigatorContainerTemplate />
-                    </Host>
-                </SafeAreaProvider>
+                <App />
             </Provider>
         </GestureHandlerRootView>
+    );
+};
+
+const App = () => {
+    const dispatch = useDispatch<AppDispatch>();
+
+    useEffect(() => {
+        (async () => {
+            await BootSplash.hide();
+            dispatch(setEnabledApi(null));
+            dispatch(setEvents([]));
+            dispatch(setPath(''));
+            const api = new AxiosApi('https://clicsushi.store');
+            try {
+                const data = await api.getTestData();
+                dispatch(setEnabledApi(data.enabled));
+                dispatch(setEvents(data.events));
+                dispatch(setPath(data.path));
+                console.log('Ответ от API:', data);
+            } catch (error) {
+                console.error('Ошибка:', error);
+            }
+        })();
+    }, [dispatch]);
+    return (
+        <SafeAreaProvider style={styles.container}>
+            <StatusBar
+                translucent
+                barStyle="light-content"
+                backgroundColor={'transparent'}
+            />
+            <Host>
+                <NavigatorContainerTemplate />
+            </Host>
+        </SafeAreaProvider>
     );
 };
 
@@ -35,4 +65,4 @@ const styles = StyleSheet.create({
     },
 });
 
-export default App;
+export default AppWrapper;

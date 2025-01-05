@@ -1,6 +1,6 @@
 import type { NavigationContainerRef } from '@react-navigation/native';
 import * as React from 'react';
-import { Screens } from './const';
+import { Screens } from '@src/navigation/const';
 
 export type NavigationParams = Record<string, any>;
 
