@@ -12,7 +12,7 @@ export const useNetworkStatus = (): boolean => {
         return () => {
             unsubscribe();
         };
-    }, []);
+    }, [isConnected]);
 
     return isConnected;
 };
