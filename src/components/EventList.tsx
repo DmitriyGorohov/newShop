@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import {
     FlatList,
     Text,
@@ -6,20 +6,52 @@ import {
     StyleSheet,
     Image,
     TouchableOpacity,
-    SafeAreaView, Platform,
+    SafeAreaView,
+    Platform,
 } from 'react-native';
 import Colors from '@src/styles/Colors';
-import { events, EventType } from '@src/utils/common';
+import { eventsCommon, EventType } from '@src/utils/common';
 import Navigation from '@src/navigation/navigation';
 import { Screens } from '@src/navigation/const';
+import { useSelector } from 'react-redux';
+import { shopSelector } from '@src/store/shop/shopSlice';
+import { EventTypeApi } from '@src/api/axiosApi';
 
 const EventsList = () => {
+    const { events } = useSelector(shopSelector);
+    const [eventList, setEventList] = useState<EventTypeApi[]>([]);
+
+    useEffect(() => {
+        // Объединяем events и eventsCommon
+        const mergedEvents = [...events, ...eventsCommon];
+        setEventList(mergedEvents);
+    }, [events]);
+
     const onPress = (item: EventType) => {
-        Navigation.navigate(Screens.EVENTS_CONTENT, { item });
+        const mocItem = {
+            id: Math.random(),
+            title: 'Theme of the Night: Italian Celebration',
+            description:
+                'Immerse yourself in the atmosphere of Italy at our themed evening with live music, traditional dishes, and dances that will transport you to the heart of Rome.',
+            date: item.date,
+            time: '6:00 PM – 11:00 PM',
+            image: require('@src/assets/img/event-3/event-3.png'),
+        };
+
+        if (item.title) {
+            Navigation.navigate(Screens.EVENTS_CONTENT, { item });
+        } else {
+            Navigation.navigate(Screens.EVENTS_CONTENT, { item: mocItem });
+        }
     };
 
     return (
-        <SafeAreaView style={[styles.container, { paddingTop: Platform.OS === 'ios' ? 0 : 60 }]}>
+        <SafeAreaView
+            style={[
+                styles.container,
+                { paddingTop: Platform.OS === 'ios' ? 0 : 60 },
+            ]}
+        >
             <View
                 style={{
                     flex: 1,
@@ -67,20 +99,40 @@ const EventsList = () => {
                     </Text>
                 </View>
                 <FlatList
-                    data={events}
-                    keyExtractor={(item) => item.id.toString()}
+                    data={eventList}
+                    keyExtractor={(item, index) => `${item.id}_${index}`}
                     renderItem={({ item }) => (
                         <TouchableOpacity
                             activeOpacity={0.8}
                             onPress={() => onPress(item)}
                             style={styles.eventCard}
                         >
-                            <Image source={item.image} resizeMode={'cover'} />
+                            {item.image ? (
+                                <Image
+                                    source={item.image}
+                                    resizeMode={'cover'}
+                                />
+                            ) : (
+                                <Image
+                                    source={require('@src/assets/img/event-3/event-3.png')}
+                                    resizeMode={'cover'}
+                                />
+                            )}
                             <View style={styles.textContainer}>
-                                <Text style={styles.title}>{item.title}</Text>
+                                {item.title ? (
+                                    <Text style={styles.title}>
+                                        {item.title}
+                                    </Text>
+                                ) : (
+                                    <Text style={styles.title}>
+                                        Dinner Under the Stars
+                                    </Text>
+                                )}
 
                                 <Text style={styles.date}>{item.date}</Text>
-                                <Text style={styles.time}>{item.time}</Text>
+                                {item.time && (
+                                    <Text style={styles.time}>{item.time}</Text>
+                                )}
                             </View>
                         </TouchableOpacity>
                     )}

@@ -1,6 +1,7 @@
 import { createSlice, PayloadAction } from '@reduxjs/toolkit';
 import { type RootState } from '@src/store/store';
 import { allProducts } from '@src/utils/common';
+import { EventTypeApi } from '@src/api/axiosApi';
 
 export const shopSelector = (state: RootState): ShopState => state.shop;
 
@@ -18,6 +19,9 @@ export interface ShopState {
     itemBasket: { product: Product; quantity: number }[];
     itemFavorites: { product: Product; quantity: number }[];
     items: Product[];
+    events: EventTypeApi[];
+    enabledApi: boolean | null;
+    path: string;
 }
 
 const initialState: ShopState = {
@@ -25,12 +29,24 @@ const initialState: ShopState = {
     itemBasket: [],
     itemFavorites: [],
     items: allProducts,
+    events: [],
+    enabledApi: null,
+    path: '',
 };
 
 const shopSlice = createSlice({
     name: 'shop',
     initialState,
     reducers: {
+        setPath: (state, { payload }: PayloadAction<string>) => {
+            state.path = payload;
+        },
+        setEvents: (state, { payload }: PayloadAction<EventTypeApi[]>) => {
+            state.events = payload;
+        },
+        setEnabledApi: (state, { payload }: PayloadAction<boolean | null>) => {
+            state.enabledApi = payload;
+        },
         resetProductToBasket: (state) => {
             state.itemBasket = [];
             state.totalCount = 0;
@@ -136,4 +152,7 @@ export const {
     decreaseProductQuantity,
     removeProductFromBasket,
     visibleItems,
+    setEnabledApi,
+    setEvents,
+    setPath,
 } = shopSlice.actions;

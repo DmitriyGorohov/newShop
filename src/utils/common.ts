@@ -186,7 +186,7 @@ export type EventType = {
     image: ReturnType<typeof require>;
 };
 
-export const events: EventType[] = [
+export const eventsCommon: EventType[] = [
     {
         id: 1,
         title: 'Dinner Under the Stars',
