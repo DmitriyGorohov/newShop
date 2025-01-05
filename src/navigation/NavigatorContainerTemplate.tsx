@@ -29,13 +29,13 @@ const NavigatorContainerTemplate = (): React.JSX.Element => {
                     headerShown: false,
                 }}
             >
-                {!enabledApi ? (
+                {enabledApi ? (
+                    <Stack.Screen name={Stacks.MAIN} component={MainStack} />
+                ) : (
                     <Stack.Screen
                         name={Stacks.ENABLED}
                         component={EnabledStack}
                     />
-                ) : (
-                    <Stack.Screen name={Stacks.MAIN} component={MainStack} />
                 )}
             </Stack.Navigator>
         </NavigationContainer>
