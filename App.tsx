@@ -30,6 +30,8 @@ const App = () => {
     useEffect(() => {
         if (!isConnected) {
             Navigation.navigate(Screens.NOT_INTERNET); // Переход на экран "Нет интернета"
+        } else {
+            Navigation.navigate(Screens.MAIN_SCREEN);
         }
     }, [isConnected]);
 
