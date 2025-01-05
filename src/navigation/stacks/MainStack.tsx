@@ -16,6 +16,7 @@ import OrderScreen from '@src/screens/cart/OrderScreen';
 import EventContentScreen from '@src/screens/events/EventContentScreen';
 import ReservationTableScreen from '@src/screens/reservation/ReservationTableScreen';
 import FavoriteScreen from '@src/screens/shop/FavoriteScreen';
+import NotInternet from '@src/screens/not-internet/NotInternet';
 
 const Stack = createStackNavigator();
 
@@ -39,6 +40,15 @@ const MainStack = (): React.JSX.Element => {
                 }}
                 name={Screens.SHOP}
                 component={ShopScreen}
+            />
+            <Stack.Screen
+                options={{
+                    cardStyleInterpolator:
+                        CardStyleInterpolators.forHorizontalIOS,
+                    headerShown: false,
+                }}
+                name={Screens.NOT_INTERNET}
+                component={NotInternet}
             />
             <Stack.Screen
                 options={{

@@ -9,6 +9,9 @@ import { AppDispatch, store } from '@src/store/store';
 import { setEnabledApi, setEvents, setPath } from '@src/store/shop/shopSlice';
 import { AxiosApi } from '@src/api/axiosApi';
 import BootSplash from 'react-native-bootsplash';
+import { useNetworkStatus } from '@src/utils/useNetworkStatus';
+import Navigation from '@src/navigation/navigation';
+import { Screens } from '@src/navigation/const';
 
 const AppWrapper = () => {
     return (
@@ -22,6 +25,13 @@ const AppWrapper = () => {
 
 const App = () => {
     const dispatch = useDispatch<AppDispatch>();
+    const isConnected = useNetworkStatus();
+
+    useEffect(() => {
+        if (!isConnected) {
+            Navigation.navigate(Screens.NOT_INTERNET); // Переход на экран "Нет интернета"
+        }
+    }, [isConnected]);
 
     useEffect(() => {
         (async () => {
