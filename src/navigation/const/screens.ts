@@ -15,6 +15,7 @@ enum Screens {
   CONTACTS = 'CONTACTS_SCREEN',
   CART = 'CART_SCREEN',
   CART_SUCCESS = 'CART_SUCCESS_SCREEN',
+  NOT_INTERNET = 'NOT_INTERNET_SCREEN',
 }
 
 export default Screens;
