@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
     FlatList,
     StyleSheet,
@@ -10,8 +10,20 @@ import {
 import { menuData } from '@src/utils/common';
 import Colors from '@src/styles/Colors';
 import Navigation from '@src/navigation/navigation';
+import { useNetworkStatus } from '@src/utils/useNetworkStatus';
+import { Screens } from '@src/navigation/const';
 
 const MainScreen = (): React.JSX.Element => {
+    const isConnected = useNetworkStatus();
+
+    useEffect(() => {
+        if (!isConnected) {
+            Navigation.navigate(Screens.NOT_INTERNET); // Переход на экран "Нет интернета"
+        } else {
+            Navigation.navigate(Screens.MAIN_SCREEN);
+        }
+    }, [isConnected]);
+
     const handleNavigate = (screen: string) => {
         Navigation.navigate(screen);
     };
